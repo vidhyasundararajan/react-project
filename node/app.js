@@ -26,6 +26,8 @@ mysqlconnection.connect((err) => {
 	console.log(err);
 });
 
+app.use(cors());
+
 app.use(express.static('public'));
 
 app.use(express.json());
@@ -36,9 +38,10 @@ app.get('/', (req,res)=> {
 
 
 app.post('/patients/add', (req, res) => {
+	console.log(req)	
 	const INSERT_QUERY = `INSERT INTO demographics (name, gender,dob, age, appointmentdate, aadharnumber) VALUES ('${req.body.username}', 
-	'${req.body.gender}', DATE_FORMAT(STR_TO_DATE('${req.body.dob}','%d/%m/%Y'), '%Y-%m-%d'), ${req.body.age}, 
-	DATE_FORMAT(STR_TO_DATE('${req.body.appointmentdate}','%d/%m/%Y'), '%Y-%m-%d'), '${req.body.aadharnumber}')`;
+	'${req.body.gender}', DATE_FORMAT(STR_TO_DATE('${req.body.dob}','%Y-%m-%d'), '%Y-%m-%d'), ${req.body.age}, 
+	DATE_FORMAT(STR_TO_DATE('${req.body.appointmentdate}','%Y-%m-%d'), '%Y-%m-%d'), '${req.body.aadharnumber}')`;
 
 	mysqlconnection.query(INSERT_QUERY, (err, rows, fields) => {
 		if (err) {

@@ -3,7 +3,7 @@ import {
   Container, Col, Form,
   FormGroup, Label, Input,
   Button, FormText, FormFeedback,
-  Radio, Alert,
+  Radio, Alert, DropdownMenu, DropdownItem, Dropdown,
 } from 'reactstrap';
 import axios from 'axios';
 import { RadioGroup, RadioButton} from 'react-radio-buttons';
@@ -16,7 +16,7 @@ export default class PatientDetails extends React.Component {
       username: null,
       age: null,
       aadhar: '',
-      male: null,
+      male: true,
       female: null,
       validate: {
         emailState: '',
@@ -69,7 +69,8 @@ export default class PatientDetails extends React.Component {
           male: false 
         });
     }
-    this.setState({[nam]: val});
+
+    this.setState({salutation: val});
   }
   myChangeHandler = (event) => {
     let nam = event.target.name;
@@ -102,16 +103,16 @@ export default class PatientDetails extends React.Component {
    mySubmitHandler = (event) => {
     const details = {
                 username: this.state.username,
-                dob: this.state.dob,
+                dob: this.state.bday,
                 age: this.state.age,
                 appointmentdate: this.state.appointmentdate,
-                aadharnumber: this.state.aadharnumber
+                aadharnumber: this.state.aadhar
     };
     if (this.state.male) {
       details['gender'] = 'MALE';
     }
     else {
-      details['female'] = 'FEMALE';
+      details['gender'] = 'FEMALE';
     }
 
     if (!this.state.salutation) {
@@ -150,15 +151,20 @@ export default class PatientDetails extends React.Component {
       event.preventDefault();
     }
     else {
+      const data = { username: 'example' };
       fetch('http://127.0.0.1:4000/patients/add', {
-      method: 'post',
-      body: JSON.stringify(details)
+      method: 'POST', // or 'PUT'
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(details),
+      mode: 'cors',
       })
       .then(response => {
          console.log(response) 
       });
       
-      alert("You are submitting for the User" + this.state.username);
+      alert("User " + this.state.username + " Registered Successfully");
     }
   }
 
@@ -180,21 +186,16 @@ export default class PatientDetails extends React.Component {
           <Col>
             <Alert color="primary" isOpen={this.state.visible} toggle={this.toggle.bind(this)}>{this.state.info}</Alert>
             <FormGroup>
-              <Label>Salutation</Label>
-              <Input
-                type="text"
-                name="salutation"
-                id="salutation"
-                placeholder="MR/MRS/MS"
-                value={this.state.salutation}
-                maxlength="4" 
-                size="4"
-                onChange={ (e) => {
+            <Label>Salutation</Label>
+              <Input type="select" name="select" id="exampleSelect" 
+              onChange={ (e) => {
                             this.myTextHandler(e)
                             this.handleChange(e)
-                          } }
-              />
-              <FormText>Your username is most likely your email.</FormText>
+                          } }>
+                <option>MR</option>
+                <option>MRS</option>
+                <option>MS</option>
+              </Input>
             </FormGroup>
           </Col>
           <Col>
